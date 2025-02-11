@@ -21,7 +21,7 @@
     }
   
     &:focus-within {
-      outline: 2px solid var(--teal);
+      outline: 2px solid var(--lightpink);
       border-radius: 4px;
   
       > *:focus {
@@ -34,7 +34,7 @@
     :root {
       --black: hsl(189, 74%, 83%, 0.7);
       --pink: hsl(0, 100%, 75%);
-      --gray: hsl(220, 2%, 51%);
+      --gray: hsl(0, 0%, 100%);
       --lightpink: hsl(0, 100%, 90%);
     }
   
@@ -54,7 +54,7 @@
       text-align: center;
       font-weight: 900;
       margin: 0;
-      color: hsl(from var(--lightpink) h 20% 15%);
+      color: hsl(from var(--black) h 100% 50%);
     }
   
     @layer demo-specific-prettying-up {
