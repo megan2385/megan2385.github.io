@@ -1,0 +1,34 @@
+bgimage {
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+}
+
+.background{
+  position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+}
+
+.popup1 {
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  transform: translate(-40%);
+  width: 400px;
+  z-index: 2;
+}
+
+.popup2 {
+  position: absolute;
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 350px;
+  z-index: 2;
+}
+
