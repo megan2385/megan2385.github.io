@@ -2,9 +2,8 @@ body {
     background: url('../img/computer_screen.png');
     background-repeat: no-repeat;
   }
-  article{
+  
   #overlay {
-    
     position: fixed;
     top: 0;
     left: 0;
@@ -20,4 +19,4 @@ body {
     width: 150px;
     height: 38px;
   }
-  }
+  
