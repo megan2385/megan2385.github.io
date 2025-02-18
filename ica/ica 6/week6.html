@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #flex-parent{
+            display:flex;
+            flex-direction: column-reverse;
+            padding: 2px;
+            border: 5px solid palevioletred;
+            background-color: lightgreen;
+        }
+        #box1 {
+            height: 300px;
+            width: 300px;
+            background-color: lightblue;
+            border: 5px solid pink;
+        }
+
+        #box2{
+            height: 300px;
+            width: 300px;
+            background-color: pink;
+            border: 5px solid lightblue;
+        }
+
+        @media screen and (max-width: 1200px) {
+            #flex-parent{
+                flex-direction: column;
+                background-color: mistyrose;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div id="flex-parent">
+    <div id="box1"></div>
+    <div id="box2"></div>
+    <div id="box1"></div>
+    <div id="box2"></div>
+    </div>
+</body>
+</html>
