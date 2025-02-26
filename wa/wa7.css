@@ -1,0 +1,74 @@
+body{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: powderblue;
+}
+nav{
+    height: 50vh;
+    display:flex;
+    flex-direction: row;
+    justify-content: space-between;
+    height:20px;
+    background-color: cornsilk;
+}
+nav a{
+    width:10vw;
+    text-align: center;
+    text-decoration: none;
+    color: darkslategray;
+    font-family: monospace;
+}
+h1{
+    color: darkslategray;
+    font-family: monospace;
+}
+
+
+img{
+    width:30vw;
+    height: 50vh;
+}
+.image-hover{
+    width:30vw;
+    height: 50vh;
+    background-image: url('plink.png');
+    background-size: cover;
+    transition: background-image 0.5s ease-in-out;
+}
+.image-hover:hover{
+    background-image: url('blink.png');
+}
+
+
+@keyframes red-ball{
+    0%{
+
+    }
+    25%{
+
+        translate: 60vh 50;
+    }
+    50%{
+        translate: 50vh 40vw;
+    }
+    75%{
+        translate: -30vh 40vw;
+    }
+    100%{
+        translate: 0 0;
+    }
+}
+
+#red-ball{
+    background-color: palevioletred;
+    width: 20px;
+    height:20px;
+    border-radius: 50%;
+    position: relative;
+    left:5vw;
+    top:0;
+    animation-name: red-ball;
+    animation-duration: 8s;
+    animation-iteration-count: infinite;
+}
