@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ICA 10</title>
+    <style>
+        .box{
+            background-color: cadetblue;
+            border: 5px solid pink;
+            height: 200px;
+            width: 200px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1 class="name">Hello!</h1>
+    <button>click me!</button>
+    <div class="box"></div>
+    <script>
+        let box = document.querySelector('.box');
+        box.addEventListener('click', changeColor);
+
+        function changeColor(){
+            let newBox = document.createElement('div');
+            newBox.classList.add('box');
+
+            box.insertAdjacentElement('afterend', newBox);
+        }
+
+        console.log('Hello world!');
+        let btn = document.querySelector('button');
+        let nameElement = document.querySelector('.name');
+        btn.addEventListener('click',updateName);
+        function updateName() {
+            
+            var r_text = [
+                "The spirits are very happy today! They will do their best to shower everyone with good fortune.",
+                "The spirits are in good humor today. I think you'll have a little extra luck.",
+                "The spirits feel neutral today. The day is in your hands.",
+                "The spirits are somewhat annoyed today. Luck will not be on your side.",
+                "The spirits are very displeased today. They will do their best to make your life difficult."
+            ];
+
+            var i = Math.floor(r_text.length * Math.random());
+
+          
+            nameElement.innerHTML = r_text[i];
+
+        }
+    </script>
+</body>
+
+</html>
