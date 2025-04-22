@@ -6,8 +6,9 @@
   <title>Dice Phone Number Game</title>
   <style>
     h1 {
-  color: #cc2424;
-        }
+      color: #cc2424;
+    }
+
     body {
       font-family: Arial, sans-serif;
       background-image: url('dragon.jpg');
@@ -26,7 +27,6 @@
       border: 2px solid #333;
       border-radius: 10px;
       background-color: white;
-      
       width: fit-content;
       margin: 20px auto;
     }
@@ -83,7 +83,7 @@
     }
 
     button:hover {
-      background-color: #973131;
+      background-color: #7b2626;
     }
 
     #digitInput {
@@ -94,7 +94,7 @@
 
     #instruction {
       font-size: 1rem;
-      color: #e32a2a;
+      color: #ffffff;
       margin-top: 5px;
     }
 
@@ -124,11 +124,10 @@
 </head>
 <body>
 
-  <h1>Roll for your Fate!🎲</h1>
+  <h1>Roll for your Fate! 🎲</h1>
 
   <div id="phoneDisplay">_ _ _ - _ _ _ - _ _ _ _</div>
 
-  
   <div id="diceWrapper" onclick="rollDice()">
     <img id="diceImage" src="d20.png" alt="D20 Dice">
     <div id="diceNumber"></div>
@@ -157,27 +156,31 @@
       const diceWrapper = document.getElementById("diceWrapper");
       const diceNumber = document.getElementById("diceNumber");
 
-      
       diceWrapper.classList.remove("shake");
       void diceWrapper.offsetWidth; 
       diceWrapper.classList.add("shake");
 
-      
       setTimeout(() => {
         const roll = Math.floor(Math.random() * 20) + 1;
         diceNumber.textContent = roll;
 
         if (roll === 1) {
-          if (phoneDigits.length > 0) phoneDigits.pop();
+          phoneDigits = [];
           digitsAllowed = 0;
           disableInput();
-          document.getElementById("instruction").innerText = "Critical fail! A digit was removed.";
-        } else if (roll === 20) {
+          document.getElementById("instruction").innerText = "Critical fail! Number reset!";
+        } else if ([17, 18, 19].includes(roll)) {
           digitsAllowed = Math.min(2, 10 - phoneDigits.length);
           enableInput(digitsAllowed);
+          document.getElementById("instruction").innerText = "Nice roll! Enter 2 digits.";
+        } else if (roll === 20) {
+          digitsAllowed = 10 - phoneDigits.length;
+          enableInput(digitsAllowed);
+          document.getElementById("instruction").innerText = "Nat 20! Enter the rest of the number!";
         } else {
           digitsAllowed = Math.min(1, 10 - phoneDigits.length);
           enableInput(digitsAllowed);
+          document.getElementById("instruction").innerText = "Enter 1 digit.";
         }
 
         updateDisplay();
@@ -192,7 +195,6 @@
       input.value = '';
       input.maxLength = limit;
       input.focus();
-      document.getElementById("instruction").innerText = `Enter up to ${limit} digit${limit > 1 ? 's' : ''}`;
     }
 
     function disableInput() {
