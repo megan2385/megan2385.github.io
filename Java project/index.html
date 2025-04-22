@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Dice Phone Number Game</title>
+  <style>
+    h1 {
+  color: #cc2424;
+        }
+    body {
+      font-family: Arial, sans-serif;
+      background-image: url('dragon.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      text-align: center;
+      padding: 40px;
+    }
+
+    #phoneDisplay {
+      font-size: 2rem;
+      letter-spacing: 0.3rem;
+      padding: 10px 20px;
+      border: 2px solid #333;
+      border-radius: 10px;
+      background-color: white;
+      
+      width: fit-content;
+      margin: 20px auto;
+    }
+
+    #diceWrapper {
+      position: relative;
+      display: inline-block;
+      cursor: pointer;
+      margin: 20px auto;
+    }
+
+    #diceImage {
+      width: 150px;
+      height: 150px;
+      user-select: none;
+    }
+
+    #diceNumber {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: white;
+      text-shadow: 2px 2px 5px black;
+      pointer-events: none;
+    }
+
+    .shake {
+      animation: shakeDice 0.6s ease;
+    }
+
+    @keyframes shakeDice {
+      0%   { transform: rotate(0deg); }
+      25%  { transform: rotate(10deg); }
+      50%  { transform: rotate(-10deg); }
+      75%  { transform: rotate(5deg); }
+      100% { transform: rotate(0deg); }
+    }
+
+    input, button {
+      font-size: 1.2rem;
+      margin: 10px;
+      padding: 10px;
+      border-radius: 10px;
+      border: none;
+    }
+
+    button {
+      background-color: #973131;
+      color: white;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #973131;
+    }
+
+    #digitInput {
+      width: 120px;
+      border: 2px solid #aaa;
+      text-align: center;
+    }
+
+    #instruction {
+      font-size: 1rem;
+      color: #e32a2a;
+      margin-top: 5px;
+    }
+
+    #submissionLog {
+      margin-top: 30px;
+      padding: 20px;
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+      background-color: #ffffff;
+      border: 2px dashed #aaa;
+      border-radius: 10px;
+      text-align: left;
+      min-height: 100px;
+    }
+
+    #submissionLog h3 {
+      margin-top: 0;
+    }
+
+    .submitted-number {
+      font-family: monospace;
+      margin: 5px 0;
+      font-size: 1.2rem;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Roll for your Fate!🎲</h1>
+
+  <div id="phoneDisplay">_ _ _ - _ _ _ - _ _ _ _</div>
+
+  
+  <div id="diceWrapper" onclick="rollDice()">
+    <img id="diceImage" src="d20.png" alt="D20 Dice">
+    <div id="diceNumber"></div>
+  </div>
+
+  <div>
+    <input id="digitInput" type="text" maxlength="2" placeholder="Enter digits" disabled />
+    <button onclick="submitDigits()" id="submitDigitsBtn" disabled>Submit Digits</button>
+    <div id="instruction"></div>
+  </div>
+
+  <div>
+    <button onclick="submitPhone()">Submit Phone Number</button>
+  </div>
+
+  <div id="submissionLog">
+    <h3>Submitted Phone Numbers:</h3>
+    <div id="logEntries"></div>
+  </div>
+
+  <script>
+    let phoneDigits = [];
+    let digitsAllowed = 0;
+
+    function rollDice() {
+      const diceWrapper = document.getElementById("diceWrapper");
+      const diceNumber = document.getElementById("diceNumber");
+
+      
+      diceWrapper.classList.remove("shake");
+      void diceWrapper.offsetWidth; 
+      diceWrapper.classList.add("shake");
+
+      
+      setTimeout(() => {
+        const roll = Math.floor(Math.random() * 20) + 1;
+        diceNumber.textContent = roll;
+
+        if (roll === 1) {
+          if (phoneDigits.length > 0) phoneDigits.pop();
+          digitsAllowed = 0;
+          disableInput();
+          document.getElementById("instruction").innerText = "Critical fail! A digit was removed.";
+        } else if (roll === 20) {
+          digitsAllowed = Math.min(2, 10 - phoneDigits.length);
+          enableInput(digitsAllowed);
+        } else {
+          digitsAllowed = Math.min(1, 10 - phoneDigits.length);
+          enableInput(digitsAllowed);
+        }
+
+        updateDisplay();
+      }, 600);
+    }
+
+    function enableInput(limit) {
+      const input = document.getElementById("digitInput");
+      const submitBtn = document.getElementById("submitDigitsBtn");
+      input.disabled = false;
+      submitBtn.disabled = false;
+      input.value = '';
+      input.maxLength = limit;
+      input.focus();
+      document.getElementById("instruction").innerText = `Enter up to ${limit} digit${limit > 1 ? 's' : ''}`;
+    }
+
+    function disableInput() {
+      document.getElementById("digitInput").disabled = true;
+      document.getElementById("submitDigitsBtn").disabled = true;
+      document.getElementById("instruction").innerText = '';
+    }
+
+    function submitDigits() {
+      const input = document.getElementById("digitInput").value.replace(/\D/g, '');
+      const limitedInput = input.slice(0, digitsAllowed);
+
+      for (let i = 0; i < limitedInput.length && phoneDigits.length < 10; i++) {
+        phoneDigits.push(limitedInput[i]);
+      }
+
+      disableInput();
+      updateDisplay();
+    }
+
+    function updateDisplay() {
+      let formatted = phoneDigits.join('');
+      while (formatted.length < 10) {
+        formatted += '_';
+      }
+      formatted = `${formatted.slice(0, 3)}-${formatted.slice(3, 6)}-${formatted.slice(6, 10)}`;
+      document.getElementById("phoneDisplay").innerText = formatted;
+    }
+
+    function submitPhone() {
+      if (phoneDigits.length === 10) {
+        const formattedNumber = `${phoneDigits.slice(0, 3).join('')}-${phoneDigits.slice(3, 6).join('')}-${phoneDigits.slice(6).join('')}`;
+        const entry = document.createElement("div");
+        entry.className = "submitted-number";
+        entry.textContent = formattedNumber;
+        document.getElementById("logEntries").appendChild(entry);
+
+        phoneDigits = [];
+        updateDisplay();
+      } else {
+        alert("Phone number incomplete. Keep rolling!");
+      }
+    }
+  </script>
+</body>
+</html>
