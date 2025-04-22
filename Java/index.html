@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Dice Phone Number Game</title>
+  <title>DND Dialer!</title>
   <style>
     h1 {
       color: #cc2424;
@@ -124,7 +124,7 @@
 </head>
 <body>
 
-  <h1>Roll for your Fate! 🎲</h1>
+  <h1>DND Dialer! 🎲</h1>
 
   <div id="phoneDisplay">_ _ _ - _ _ _ - _ _ _ _</div>
 
@@ -148,16 +148,50 @@
     <div id="logEntries"></div>
   </div>
 
+  <audio id="diceSound" src="dicenoise.mp3" preload="auto"></audio>
+  <audio id="goblinSound" src="goblin.mp3" preload="auto"></audio>
+  <audio id="bonkSound" src="losebonk.mp3" preload="auto"></audio>
+  <audio id="bgMusic" src="tavern.mp3" preload="auto" loop></audio>
+  <audio id="winSound" src="win.mp3" preload="auto" loop></audio>
+
   <script>
     let phoneDigits = [];
     let digitsAllowed = 0;
+    let inputInProgress = false;
+
+    
+    window.addEventListener('load', () => {
+      const bgMusic = document.getElementById('bgMusic');
+      bgMusic.volume = 0.5;
+      bgMusic.play().catch(() => {
+        document.body.addEventListener('click', () => {
+          bgMusic.play();
+        }, { once: true });
+      });
+    });
 
     function rollDice() {
+      if (inputInProgress) {
+        alert("Please enter your digits before rolling again.");
+        return;
+      }
+
       const diceWrapper = document.getElementById("diceWrapper");
       const diceNumber = document.getElementById("diceNumber");
+      const diceSound = document.getElementById("diceSound");
+      const goblinSound = document.getElementById("goblinSound");
+      const bonkSound = document.getElementById("bonkSound");
+      const winSound = document.getElementById("winSound");
+
+     
+      winSound.pause();
+      winSound.currentTime = 0;
+
+      diceSound.currentTime = 0; 
+      diceSound.play();
 
       diceWrapper.classList.remove("shake");
-      void diceWrapper.offsetWidth; 
+      void diceWrapper.offsetWidth;
       diceWrapper.classList.add("shake");
 
       setTimeout(() => {
@@ -167,16 +201,30 @@
         if (roll === 1) {
           phoneDigits = [];
           digitsAllowed = 0;
+          bonkSound.currentTime = 0;
+          bonkSound.play();
           disableInput();
           document.getElementById("instruction").innerText = "Critical fail! Number reset!";
+        } else if (roll >= 2 && roll <= 4) {
+          if (phoneDigits.length > 0) {
+            phoneDigits.pop();
+            goblinSound.currentTime = 0;
+            goblinSound.play();
+            document.getElementById("instruction").innerText = "Oh no! A goblin stole your number!";
+          } else {
+            document.getElementById("instruction").innerText = "A goblin came but found nothing to steal!";
+          }
+          disableInput();
         } else if ([17, 18, 19].includes(roll)) {
           digitsAllowed = Math.min(2, 10 - phoneDigits.length);
           enableInput(digitsAllowed);
-          document.getElementById("instruction").innerText = "Nice roll! Enter 2 digits.";
+          document.getElementById("instruction").innerText = "Success! Enter 2 digits.";
         } else if (roll === 20) {
           digitsAllowed = 10 - phoneDigits.length;
           enableInput(digitsAllowed);
           document.getElementById("instruction").innerText = "Nat 20! Enter the rest of the number!";
+          winSound.volume = 0.6;
+          winSound.play();
         } else {
           digitsAllowed = Math.min(1, 10 - phoneDigits.length);
           enableInput(digitsAllowed);
@@ -195,12 +243,13 @@
       input.value = '';
       input.maxLength = limit;
       input.focus();
+      inputInProgress = true;
     }
 
     function disableInput() {
       document.getElementById("digitInput").disabled = true;
       document.getElementById("submitDigitsBtn").disabled = true;
-      document.getElementById("instruction").innerText = '';
+      inputInProgress = false;
     }
 
     function submitDigits() {
