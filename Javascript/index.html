@@ -4,14 +4,26 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>DND Dialer!</title>
+
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tagesschrift&display=swap" rel="stylesheet">
+
   <style>
+    .tagesschrift-regular {
+      font-family: "Tagesschrift", system-ui;
+      font-weight: 400;
+      font-style: normal;
+    }
+
     h1 {
       color: #cc2424;
     }
 
     body {
-      font-family: Arial, sans-serif;
-      background-image: url('dragon.jpg');
+      font-family: "Tagesschrift", Arial, sans-serif;
+      background-image: url('dndbackground.png');
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -98,31 +110,43 @@
       margin-top: 5px;
     }
 
-    #submissionLog {
-      margin-top: 30px;
-      padding: 20px;
-      max-width: 400px;
-      margin-left: auto;
-      margin-right: auto;
-      background-color: #ffffff;
-      border: 2px dashed #aaa;
-      border-radius: 10px;
-      text-align: left;
-      min-height: 100px;
+    
+    #successFrame {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+      z-index: 1000;
     }
 
-    #submissionLog h3 {
-      margin-top: 0;
+    #successFrame img {
+      max-width: 90vw;
+      max-height: 90vh;
     }
 
-    .submitted-number {
-      font-family: monospace;
-      margin: 5px 0;
+    #successFrame button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
       font-size: 1.2rem;
+      padding: 5px 10px;
+      background-color: #973131;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    #successFrame button:hover {
+      background-color: #7b2626;
     }
   </style>
 </head>
-<body>
+<body class="tagesschrift-regular">
 
   <h1>DND Dialer! 🎲</h1>
 
@@ -143,23 +167,27 @@
     <button onclick="submitPhone()">Submit Phone Number</button>
   </div>
 
-  <div id="submissionLog">
-    <h3>Submitted Phone Numbers:</h3>
-    <div id="logEntries"></div>
+  
+  <div id="successFrame">
+    <div style="position: relative;">
+      <img src="frame.png" alt="Success Frame">
+      <button onclick="closeFrame()">Close</button>
+    </div>
   </div>
 
+  
   <audio id="diceSound" src="dicenoise.mp3" preload="auto"></audio>
   <audio id="goblinSound" src="goblin.mp3" preload="auto"></audio>
   <audio id="bonkSound" src="losebonk.mp3" preload="auto"></audio>
   <audio id="bgMusic" src="tavern.mp3" preload="auto" loop></audio>
   <audio id="winSound" src="win.mp3" preload="auto" loop></audio>
+  <audio id="cheerSound" src="cheer.mp3" preload="auto"></audio>
 
   <script>
     let phoneDigits = [];
     let digitsAllowed = 0;
     let inputInProgress = false;
 
-    
     window.addEventListener('load', () => {
       const bgMusic = document.getElementById('bgMusic');
       bgMusic.volume = 0.5;
@@ -183,11 +211,10 @@
       const bonkSound = document.getElementById("bonkSound");
       const winSound = document.getElementById("winSound");
 
-     
       winSound.pause();
       winSound.currentTime = 0;
 
-      diceSound.currentTime = 0; 
+      diceSound.currentTime = 0;
       diceSound.play();
 
       diceWrapper.classList.remove("shake");
@@ -275,17 +302,20 @@
 
     function submitPhone() {
       if (phoneDigits.length === 10) {
-        const formattedNumber = `${phoneDigits.slice(0, 3).join('')}-${phoneDigits.slice(3, 6).join('')}-${phoneDigits.slice(6).join('')}`;
-        const entry = document.createElement("div");
-        entry.className = "submitted-number";
-        entry.textContent = formattedNumber;
-        document.getElementById("logEntries").appendChild(entry);
-
         phoneDigits = [];
         updateDisplay();
+        document.getElementById("successFrame").style.display = "flex";
+        document.getElementById("cheerSound").play();
       } else {
         alert("Phone number incomplete. Keep rolling!");
       }
+    }
+
+    function closeFrame() {
+      document.getElementById("successFrame").style.display = "none";
+      const cheer = document.getElementById("cheerSound");
+      cheer.pause();
+      cheer.currentTime = 0;
     }
   </script>
 </body>
